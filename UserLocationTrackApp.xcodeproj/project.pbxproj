@@ -17,6 +17,7 @@
 		7C272DA62C02145400BEF88B /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C272DA52C02145400BEF88B /* MapKit.framework */; };
 		7C272DAB2C02151A00BEF88B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7C272DAA2C02151A00BEF88B /* Localizable.strings */; };
 		7C272DAE2C02163E00BEF88B /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C272DAD2C02163E00BEF88B /* CoreLocation.framework */; };
+		7C5166AC2C06F69C004CBBD2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7C5166AB2C06F69C004CBBD2 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,8 @@
 		7C272DA92C02151A00BEF88B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7C272DAC2C02152A00BEF88B /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7C272DAD2C02163E00BEF88B /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		7C5166AA2C06F69C004CBBD2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7C5166AD2C06F6A1004CBBD2 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +79,7 @@
 				7C272D972C02142F00BEF88B /* Assets.xcassets */,
 				7C272D992C02142F00BEF88B /* LaunchScreen.storyboard */,
 				7C272D9C2C02142F00BEF88B /* Info.plist */,
+				7C5166AB2C06F69C004CBBD2 /* InfoPlist.strings */,
 				7C272DAA2C02151A00BEF88B /* Localizable.strings */,
 			);
 			path = UserLocationTrackApp;
@@ -154,6 +158,7 @@
 				7C272DAB2C02151A00BEF88B /* Localizable.strings in Resources */,
 				7C272D9B2C02142F00BEF88B /* Base in Resources */,
 				7C272D962C02142C00BEF88B /* Base in Resources */,
+				7C5166AC2C06F69C004CBBD2 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +201,15 @@
 				7C272DAC2C02152A00BEF88B /* ja */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		7C5166AB2C06F69C004CBBD2 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7C5166AA2C06F69C004CBBD2 /* en */,
+				7C5166AD2C06F6A1004CBBD2 /* ja */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

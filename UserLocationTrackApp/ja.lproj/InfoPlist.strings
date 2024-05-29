@@ -1,0 +1,7 @@
+/* 
+  InfoPlist.strings
+*/
+
+"NSLocationAlwaysUsageDescription" = "このアプリは、常に位置情報を取得します";
+"NSLocationWhenInUseUsageDescription" = "このアプリは、位置情報を取得します";
+"NSLocationTemporaryUsageDescription" = "このアプリは、正確な位置情報が必要です";
