@@ -51,20 +51,24 @@ class ViewController: UIViewController {
 extension ViewController: CLLocationManagerDelegate {
 	
 	// 設定アプリにあるこのアプリの設定の変更でもコールされる
-	func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+	nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
 		
 		switch manager.authorizationStatus {
 		case .notDetermined:
-			self.locationManager.requestWhenInUseAuthorization() // 位置情報取得の許可ダイアログ表示
+			manager.requestWhenInUseAuthorization() // 位置情報取得の許可ダイアログ表示
 		case .denied:
-			let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
-				
-				// ローカライズファイルがあれば設定アプリにこのアプリの設定が表示される。(たぶん、言語の切り替え設定のため)
-				UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+			Task { @MainActor in
+				let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
+					
+					// ローカライズファイルがあれば設定アプリにこのアプリの設定が表示される。(たぶん、言語の切り替え設定のため)
+					UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+				}
+				self.showDialog(message: NSLocalizedString("Please enable location service settings.", comment: ""), actions: [defaultAction])
 			}
-			self.showDialog(message: NSLocalizedString("Please enable location service settings.", comment: ""), actions: [defaultAction])
 		case .restricted:
-			self.showDialog(message: NSLocalizedString("Location services are unavailable.", comment: ""))
+			Task { @MainActor in
+				self.showDialog(message: NSLocalizedString("Location services are unavailable.", comment: ""))
+			}
 		case .authorizedAlways:
 			fallthrough
 		case .authorizedWhenInUse:
@@ -79,16 +83,20 @@ extension ViewController: CLLocationManagerDelegate {
 					}
 					
 					if manager.accuracyAuthorization == .reducedAccuracy {
-						let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
-							
-							UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+						Task { @MainActor in
+							let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
+								
+								UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+							}
+							self.showDialog(message: NSLocalizedString("This app need precise location information.", comment: ""), actions: [defaultAction])
 						}
-						self.showDialog(message: NSLocalizedString("This app need precise location information.", comment: ""), actions: [defaultAction])
 					}
 				}
 			case .fullAccuracy:
-				self.locationManager.startUpdatingLocation()
-				self.mapView.setUserTrackingMode(.followWithHeading, animated: true)
+				manager.startUpdatingLocation()
+				Task { @MainActor in
+					self.mapView.setUserTrackingMode(.followWithHeading, animated: true)
+				}
 			default:
 				break
 			}
@@ -97,7 +105,7 @@ extension ViewController: CLLocationManagerDelegate {
 		}
 	}
 	
-	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+	nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 		
 		if let location: CLLocation = locations.last { // 最後の位置データが最新
 			
@@ -105,14 +113,16 @@ extension ViewController: CLLocationManagerDelegate {
 				return
 			}
 			
-			self.locList.append(CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
-			
-			// 軌跡の表示
-			if self.polyline != nil {
-				self.mapView.removeOverlay(self.polyline)
+			Task { @MainActor in
+				self.locList.append(CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
+				
+				// 軌跡の表示
+				if self.polyline != nil {
+					self.mapView.removeOverlay(self.polyline)
+				}
+				self.polyline = MKPolyline(coordinates: self.locList, count: self.locList.count)
+				self.mapView.insertOverlay(self.polyline, at: 0)
 			}
-			self.polyline = MKPolyline(coordinates: self.locList, count: self.locList.count)
-			self.mapView.insertOverlay(self.polyline, at: 0)
 		}
 	}
 }
