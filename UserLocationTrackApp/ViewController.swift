@@ -30,7 +30,7 @@ class ViewController: UIViewController {
 		
 	}
 	
-	func showDialog(title: String = NSLocalizedString("Confirmation", comment: ""), message: String, actions: [UIAlertAction]? = nil) {
+	func showDialog(title: String = String(localized: "Confirmation"), message: String, actions: [UIAlertAction]? = nil) {
 		let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		if let actions = actions {
 			for action in actions {
@@ -38,7 +38,7 @@ class ViewController: UIViewController {
 			}
 			
 		} else {
-			let defaultAction = UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default) { (action) in
+			let defaultAction = UIAlertAction(title: String(localized: "OK"), style: .default) { (action) in
 			}
 			alertController.addAction(defaultAction)
 		}
@@ -58,16 +58,16 @@ extension ViewController: CLLocationManagerDelegate {
 			manager.requestWhenInUseAuthorization() // 位置情報取得の許可ダイアログ表示
 		case .denied:
 			Task { @MainActor in
-				let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
+				let defaultAction: UIAlertAction = UIAlertAction(title: String(localized: "OK"), style: .default) { (action) in
 					
 					// ローカライズファイルがあれば設定アプリにこのアプリの設定が表示される。(たぶん、言語の切り替え設定のため)
 					UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
 				}
-				self.showDialog(message: NSLocalizedString("Please enable location service settings.", comment: ""), actions: [defaultAction])
+				self.showDialog(message: String(localized: "Please enable location service settings."), actions: [defaultAction])
 			}
 		case .restricted:
 			Task { @MainActor in
-				self.showDialog(message: NSLocalizedString("Location services are unavailable.", comment: ""))
+				self.showDialog(message: String(localized: "Location services are unavailable."))
 			}
 		case .authorizedAlways:
 			fallthrough
@@ -84,11 +84,11 @@ extension ViewController: CLLocationManagerDelegate {
 					
 					if manager.accuracyAuthorization == .reducedAccuracy {
 						Task { @MainActor in
-							let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
+							let defaultAction: UIAlertAction = UIAlertAction(title: String(localized: "OK"), style: .default) { (action) in
 								
 								UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
 							}
-							self.showDialog(message: NSLocalizedString("This app need precise location information.", comment: ""), actions: [defaultAction])
+							self.showDialog(message: String(localized: "This app need precise location information."), actions: [defaultAction])
 						}
 					}
 				}
