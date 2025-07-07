@@ -2,7 +2,7 @@
 // ViewController.swift
 //
 
-import MapKit
+@preconcurrency import MapKit
 import UIKit
 
 class ViewController: UIViewController {
@@ -19,7 +19,7 @@ class ViewController: UIViewController {
 		self.mapView.showsUserLocation = true
 		self.mapView.showsScale = true
 		
-		self.locationManager = CLLocationManager()
+		self.locationManager = CLLocationManager() // メインスレッドで作成しているのでdelegateメソッドはメインスレッドで呼ばれる
 		self.locationManager.delegate = self // locationManagerDidChangeAuthorizationが呼び出される
 		
 		self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -79,11 +79,14 @@ extension ViewController: CLLocationManagerDelegate {
 					}
 					
 					if manager.accuracyAuthorization == .reducedAccuracy {
-						let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
+						MainActor.assumeIsolated {
 							
-							UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+							let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
+								
+								UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
+							}
+							self.showDialog(message: NSLocalizedString("This app need precise location information.", comment: ""), actions: [defaultAction])
 						}
-						self.showDialog(message: NSLocalizedString("This app need precise location information.", comment: ""), actions: [defaultAction])
 					}
 				}
 			case .fullAccuracy:
