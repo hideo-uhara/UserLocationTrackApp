@@ -71,22 +71,21 @@ extension ViewController: CLLocationManagerDelegate {
 			switch manager.accuracyAuthorization {
 			case .reducedAccuracy: // 位置情報取得許可ダイアログで取得可で正確な位置情報がオフの場合
 				// 正確な位置情報利用の許可確認
-				manager.requestTemporaryFullAccuracyAuthorization(withPurposeKey: "NSLocationTemporaryUsageDescription") { error in
-					
-					if error != nil {
-						NSLog(error!.localizedDescription)
-						return
-					}
-					
-					if manager.accuracyAuthorization == .reducedAccuracy {
-						MainActor.assumeIsolated {
-							
+				Task {
+					do {
+						try await manager.requestTemporaryFullAccuracyAuthorization(withPurposeKey: "NSLocationTemporaryUsageDescription")
+						
+						if manager.accuracyAuthorization == .reducedAccuracy {
 							let defaultAction: UIAlertAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: .default) { (action) in
 								
 								UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!, options: [:], completionHandler: nil)
 							}
+							
 							self.showDialog(message: NSLocalizedString("This app need precise location information.", comment: ""), actions: [defaultAction])
 						}
+						
+					} catch let error as NSError {
+						print(error.localizedDescription)
 					}
 				}
 			case .fullAccuracy:
